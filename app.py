@@ -55,7 +55,7 @@ async def predict(file: UploadFile = File(...)):
         confidence = predictions[0][class_index] * 100
         predicted_animal = animal_classes.get(class_index, "Unknown Animal")
 
-        if confidence < 60:
+        if confidence < 70:
             status = "Fail"
             status_extinct = "unknown"
             message = f"Prediction confidence is under 60 percent for desire animal. Please verify the result." 
