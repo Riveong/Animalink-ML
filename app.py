@@ -1,4 +1,5 @@
 import uvicorn
+import uvicorn
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.responses import JSONResponse
 import tensorflow as tf
@@ -43,6 +44,7 @@ def preprocess_image(image):
     img_array = np.asarray(img)
     img_array = img_to_array(img)
     img_array = img_array / 255.0
+    img_array = np.expand_dims(img_array, axis=0) 
     img_array = np.expand_dims(img_array, axis=0) 
     return img_array
 
