@@ -20,6 +20,7 @@ app = app = FastAPI(
             "url": "https://github.com/AnimaLink/backend-api/blob/main/LICENSE",
         },
     )
+
 model_path = 'animalinkfix.h5'
 model = tf.keras.models.load_model(model_path)
 
@@ -42,6 +43,7 @@ def preprocess_image(image):
     img_array = np.asarray(img)
     img_array = img_to_array(img)
     img_array = img_array / 255.0
+    img_array = np.expand_dims(img_array, axis=0) 
     img_array = np.expand_dims(img_array, axis=0) 
     return img_array
 
