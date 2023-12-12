@@ -20,7 +20,7 @@ app = app = FastAPI(
             "url": "https://github.com/AnimaLink/backend-api/blob/main/LICENSE",
         },
     )
-    
+
 model_path = 'animalinkfix.h5'
 model = tf.keras.models.load_model(model_path)
 
