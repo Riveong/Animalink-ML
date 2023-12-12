@@ -7,7 +7,7 @@ RUN git clone -b staging https://github.com/AnimaLink/ml-deploy.git .
 
 RUN git lfs pull
 
-FROM python:3.10-alpine
+FROM python:3.10-bullseye
 
 WORKDIR /usr/src/app
 
