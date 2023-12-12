@@ -20,25 +20,25 @@ app = app = FastAPI(
             "url": "https://github.com/AnimaLink/backend-api/blob/main/LICENSE",
         },
     )
-model_path = 'animalink.h5'
-model = keras.models.load_model(model_path)
+model_path = 'animalinkfix.h5'
+model = tf.keras.models.load_model(model_path)
 
-animal_classes = {0 : 'Anjing ajag',  
-       1 : 'Merak biru',
-       2 : 'Merak hijau', 
-       3 : 'Sanca hijau',
+animal_classes = {0 : 'Anjing Ajag',  
+       1 : 'Merak Biru',
+       2 : 'Merak Hijau', 
+       3 : 'Sanca Hijau',
        4 : 'Anjing Shiba',
        5 : 'Tenggiling',
-       6 : 'Turkish angora',
-       7 : 'Ikan koi',
-       8 : 'Jalak bali',
-       9 : 'Sanca bola'}
+       6 : 'Kucing Angora',
+       7 : 'Ikan Koi', 
+       8 : 'Jalak Bali',
+       9 : 'Sanca Bola'}
 
-extinct_animals = {"Tenggiling", "Jalak bali", "Anjing ajag", "Merak hijau", "Sanca hijau"}
+extinct_animals = {"Tenggiling", "Jalak Bali", "Anjing Ajag", "Merak Hijau", "Sanca Hijau"}
 
 def preprocess_image(image):
     img = Image.open(image.file).convert("RGB")
-    img = img.resize((150, 150)) 
+    img = img.resize((224, 224)) 
     img_array = np.asarray(img)
     img_array = img_to_array(img)
     img_array = img_array / 255.0
@@ -51,14 +51,24 @@ async def predict(file: UploadFile = File(...)):
         image_array = preprocess_image(file)
         predictions = model.predict(image_array)
         class_index = np.argmax(predictions[0])
+        confidence = predictions[0][class_index] * 100
         predicted_animal = animal_classes.get(class_index, "Unknown Animal")
 
-        if predicted_animal in extinct_animals:
+        if confidence < 60:
+            status = "Fail"
+            status_extinct = "unknown"
+            message = f"Prediction confidence is under 60 percent for desire animal. Please verify the result." 
+
+        elif predicted_animal in extinct_animals:
+            status = "Success"
+            status_extinct = "extinct"
             message = f"Warning! {predicted_animal} is an extinct animal. Selling them is prohibited."
         else:
+            status = "Success"
+            status_extinct = "not extinct"
             message = f"The predicted animal is {predicted_animal}. You can sell them."
 
-        return JSONResponse(content={"predicted_animal": predicted_animal, "message": message})
+        return JSONResponse(content={"status": status, "predicted_animal": predicted_animal, "animal_status": status_extinct, "message": message})
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
