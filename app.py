@@ -58,18 +58,21 @@ async def predict(file: UploadFile = File(...)):
         if confidence < 70:
             status = "Fail"
             status_extinct = "unknown"
-            message = f"Prediction confidence is under 60 percent for desire animal. Please verify the result." 
+            message = f"Prediction confidence is under 70 percent for desire animal. Please verify the result." 
+            predict = f"the confidence is {round(confidence, 2)}%"
 
         elif predicted_animal in extinct_animals:
             status = "Success"
             status_extinct = "extinct"
             message = f"Warning! {predicted_animal} is an extinct animal. Selling them is prohibited."
+            predict = f"the confidence is {round(confidence, 2)}%"
         else:
             status = "Success"
             status_extinct = "not extinct"
             message = f"The predicted animal is {predicted_animal}. You can sell them."
+            predict = f"the confidence is {round(confidence, 2)}%"
 
-        return JSONResponse(content={"status": status, "predicted_animal": predicted_animal, "animal_status": status_extinct, "message": message})
+        return JSONResponse(content={"status": status, "predicted_animal": predicted_animal, "animal_status": status_extinct, "message": message, "model_confidence": predict})
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
