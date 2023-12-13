@@ -59,22 +59,29 @@ async def predict(file: UploadFile = File(...)):
             status = "Fail"
             status_extinct = "unknown"
             message = f"Prediction confidence is under 70 percent for desire animal. Please verify the result." 
-            predict = f"the confidence is {round(confidence, 2)}%"
+            predict = f"{round(confidence, 2)}"
 
         elif predicted_animal in extinct_animals:
             status = "Success"
             status_extinct = "extinct"
             message = f"Warning! {predicted_animal} is an extinct animal. Selling them is prohibited."
-            predict = f"the confidence is {round(confidence, 2)}%"
+            predict = f"{round(confidence, 2)}"
         else:
             status = "Success"
             status_extinct = "not extinct"
             message = f"The predicted animal is {predicted_animal}. You can sell them."
-            predict = f"the confidence is {round(confidence, 2)}%"
+            predict = f"{round(confidence, 2)}"
 
         return JSONResponse(content={"status": status, "predicted_animal": predicted_animal, "animal_status": status_extinct, "message": message, "model_confidence": predict})
+    #except Exception as e:
+        #raise HTTPException(status_code=500, detail=str(e))
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        status = "Error"
+        status_extinct = "unknown"
+        message = f"An error occurred: {str(e)}"
+        predict = "N/A"
+
+        return JSONResponse(content={"status": status, "predicted_animal": "Unknown Animal", "animal_status": status_extinct, "message": message, "model_confidence": predict}, status_code=500)
 
 if __name__ == "__main__":
     uvicorn.run(app, host='0.0.0.0',port=8080)
