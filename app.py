@@ -21,7 +21,7 @@ app = app = FastAPI(
         },
     )
 
-model_path = 'animalinkfix.h5'
+model_path = 'animalink_model.h5'
 model = tf.keras.models.load_model(model_path)
 
 animal_classes = {0 : 'Anjing Ajag',  
