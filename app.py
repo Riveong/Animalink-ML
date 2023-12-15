@@ -21,7 +21,7 @@ app = app = FastAPI(
         },
     )
 
-model_path = 'animalinkfix.h5'
+model_path = 'animalink_model.h5'
 model = tf.keras.models.load_model(model_path)
 
 animal_classes = {0 : 'Anjing Ajag',  
@@ -55,23 +55,33 @@ async def predict(file: UploadFile = File(...)):
         confidence = predictions[0][class_index] * 100
         predicted_animal = animal_classes.get(class_index, "Unknown Animal")
 
-        if confidence < 60:
+        if confidence < 70:
             status = "Fail"
             status_extinct = "unknown"
-            message = f"Prediction confidence is under 60 percent for desire animal. Please verify the result." 
+            message = f"Prediction confidence is under 70 percent for desire animal. Please verify the result." 
+            predict = f"{round(confidence, 2)}"
 
         elif predicted_animal in extinct_animals:
             status = "Success"
             status_extinct = "extinct"
             message = f"Warning! {predicted_animal} is an extinct animal. Selling them is prohibited."
+            predict = f"{round(confidence, 2)}"
         else:
             status = "Success"
             status_extinct = "not extinct"
             message = f"The predicted animal is {predicted_animal}. You can sell them."
+            predict = f"{round(confidence, 2)}"
 
-        return JSONResponse(content={"status": status, "predicted_animal": predicted_animal, "animal_status": status_extinct, "message": message})
+        return JSONResponse(content={"status": status, "predicted_animal": predicted_animal, "animal_status": status_extinct, "message": message, "model_confidence": predict})
+    #except Exception as e:
+        #raise HTTPException(status_code=500, detail=str(e))
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        status = "Error"
+        status_extinct = "unknown"
+        message = f"An error occurred: {str(e)}"
+        predict = "N/A"
+
+        return JSONResponse(content={"status": status, "predicted_animal": "Unknown Animal", "animal_status": status_extinct, "message": message, "model_confidence": predict}, status_code=500)
 
 if __name__ == "__main__":
     uvicorn.run(app, host='0.0.0.0',port=8080)
