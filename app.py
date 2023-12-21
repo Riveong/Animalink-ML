@@ -69,7 +69,7 @@ async def predict(file: UploadFile = File(...)):
         else:
             status = "Success"
             status_extinct = "not extinct"
-            message = f"The predicted animal is {predicted_animal}. You can sell them."
+            message = f"The predicted animal is {predicted_animal}. This animal can legally be sold."
             predict = f"{round(confidence, 2)}"
 
         return JSONResponse(content={"status": status, "predicted_animal": predicted_animal, "animal_status": status_extinct, "message": message, "model_confidence": predict})
