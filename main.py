@@ -10,7 +10,7 @@ from tensorflow.keras.preprocessing.image import img_to_array
 
 app = FastAPI()
 
-model = tf.keras.models.load_model("model/xception_latest.h5")
+model = tf.keras.models.load_model("model/animalink_model.h5")
 
 animal_classes = {0 : 'Anjing Ajag',  
        1 : 'Merak Biru',
