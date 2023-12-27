@@ -10,8 +10,7 @@ from tensorflow.keras.preprocessing.image import img_to_array
 
 app = FastAPI()
 
-model_path = 'animalink_model.h5'
-model = tf.keras.models.load_model(model_path)
+model = tf.keras.models.load_model("model/xception_latest.h5")
 
 animal_classes = {0 : 'Anjing Ajag',  
        1 : 'Merak Biru',
@@ -74,5 +73,6 @@ async def predict(file: UploadFile = File(...)):
         predict = "N/A"
 
         return JSONResponse(content={"status": status, "predicted_animal": "Unknown Animal", "animal_status": status_extinct, "message": message, "model_confidence": predict, "benchmark": benchmark}, status_code=500)
+
 if __name__ == "__main__":
     uvicorn.run(app, host='0.0.0.0',port=8080)
