@@ -75,4 +75,4 @@ async def predict(file: UploadFile = File(...)):
         return JSONResponse(content={"status": status, "predicted_animal": "Unknown Animal", "animal_status": status_extinct, "message": message, "model_confidence": predict, "benchmark": benchmark}, status_code=500)
 
 if __name__ == "__main__":
-    uvicorn.run(app, host='0.0.0.0',port=8080)
+    uvicorn.run(app, host='0.0.0.0', port=port, timeout_keep_alive=1200)

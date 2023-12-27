@@ -1,20 +1,17 @@
-# git dan git-lfs
-FROM alpine/git as lfs
+FROM python:3.10.10
 
-WORKDIR /src
+WORKDIR /app
 
-RUN git clone -b staging https://github.com/AnimaLink/ml-deploy.git .
+RUN pip install --upgrade pip
 
-RUN git lfs pull
-
-FROM python:3.10-bullseye
-
-WORKDIR /usr/src/app
-
-COPY --from=lfs /src .
+COPY requirements.txt requirements.txt 
 
 RUN pip install -r requirements.txt
 
+COPY . .
+
 EXPOSE 8080
 
-CMD ["python", "app.py"]
+ENV PYTHONUNBUFFERED=1
+
+CMD ["uvicorn", "--host", "0.0.0.0", "--port", "8080", "main:app"]
